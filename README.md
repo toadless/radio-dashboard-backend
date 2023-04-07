@@ -1,5 +1,5 @@
 [downloads]: https://github.com/toadless/radio-dashboard-backend/releases
-[downloads-badge]: https://img.shields.io/github/downloads/radio-dashboard-backend/radio/total
+[downloads-badge]: https://img.shields.io/github/downloads/toadless/radio-dashboard-backend/total
 [license]: https://github.com/toadless/radio-dashboard-backend/blob/main/LICENSE
 [license-badge]: https://img.shields.io/github/license/toadless/radio-dashboard-backend.svg
 [ci]: https://github.com/toadless/radio-dashboard-backend/actions
