@@ -8,8 +8,6 @@ plugins {
 }
 
 group 'net.toadless.radio'
-version '1.0.0'
-
 mainClassName = "net.toadless.radio.main"
 
 java {
