@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.config.Configuration;
 import net.toadless.radio.objects.info.BotInfo;
+import net.toadless.radio.objects.module.Modules;
 import okhttp3.OkHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ public class Radio extends ListenerAdapter
     private final LocalDateTime startTimestamp;
     private final Configuration configuration;
     private final OkHttpClient okHttpClient;
+    private final Modules modules;
     private ShardManager shardManager;
 
     public Radio()
@@ -37,6 +39,17 @@ public class Radio extends ListenerAdapter
         this.configuration = new Configuration(this);
         this.okHttpClient = new OkHttpClient();
         this.startTimestamp = LocalDateTime.now();
+        this.modules = new Modules(this);
+    }
+
+    public OkHttpClient getOkHttpClient()
+    {
+        return okHttpClient;
+    }
+
+    public Modules getModules()
+    {
+        return modules;
     }
 
     public void build() throws LoginException
@@ -72,8 +85,8 @@ public class Radio extends ListenerAdapter
                 .setShardsTotal(-1)
 
                 .addEventListeners(
-                        this
-//                        modules.getModules()
+                        this,
+                        modules.getModules()
                 )
 
                 .setActivity(Activity.playing("loading..."))
@@ -118,11 +131,6 @@ public class Radio extends ListenerAdapter
             throw new UnsupportedOperationException("Shardmanager is not built.");
         }
         return this.shardManager;
-    }
-
-    public OkHttpClient getOkHttpClient()
-    {
-        return okHttpClient;
     }
 
     public Configuration getConfiguration()
