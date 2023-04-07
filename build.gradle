@@ -1,19 +1,86 @@
 plugins {
     id 'java'
+    id 'idea'
+    id 'application'
+
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'nu.studer.jooq' version '7.1.1'
 }
 
 group 'net.toadless.radio'
-version '1.0-SNAPSHOT'
+version '1.0.0'
+
+mainClassName = "net.toadless.radio.main"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
+}
+
 
 repositories {
     mavenCentral()
+    maven { setUrl 'https://jitpack.io' }
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    //Misc / Util
+    implementation 'info.debatty:java-string-similarity:2.0.0'
+    implementation 'io.github.classgraph:classgraph:4.8.157'
+    implementation 'ch.qos.logback:logback-classic:1.4.6'
+    implementation'com.github.ben-manes.caffeine:caffeine:3.1.6'
+    implementation 'me.carleslc.Simple-YAML:Simple-Yaml:1.8.4'
+
+    //Web
+    implementation 'org.jsoup:jsoup:1.15.4'
+    implementation 'io.javalin:javalin:5.4.2'
+
+    //Discord
+    implementation 'net.dv8tion:JDA:5.0.0-beta.6'
+
+    //Database
+    implementation 'org.postgresql:postgresql:42.6.0'
+    jooqGenerator 'org.postgresql:postgresql:42.6.0'
+
+    implementation 'com.zaxxer:HikariCP:5.0.1'
+    implementation 'org.jooq:jooq:3.18.2'
 }
 
-test {
-    useJUnitPlatform()
+jooq {
+    version = '3.16.4'
+    configurations {
+        main {
+            generateSchemaSourceOnCompilation = false
+            generationTool {
+                logging = org.jooq.meta.jaxb.Logging.WARN
+                jdbc {
+                    url = RADIO_DB_URL
+                    user = RADIO_DB_USER
+                    password = RADIO_DB_PASSWORD
+                    driver = 'org.postgresql.Driver'
+                }
+                generator {
+                    name = 'org.jooq.codegen.DefaultGenerator'
+                    database {
+                        name = 'org.jooq.meta.postgres.PostgresDatabase'
+                        inputSchema = 'public'
+                        includes = '.*'
+                        excludes = ''
+                    }
+                    generate {
+                        deprecated = false
+                        records = true
+                        immutablePojos = true
+                        fluentSetters = true
+                    }
+                    target {
+                        packageName = 'net.toadless.radio.jooq'
+                        directory = 'src/main/jooq'
+                        clean = true
+                    }
+                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
+                }
+            }
+        }
+    }
 }
