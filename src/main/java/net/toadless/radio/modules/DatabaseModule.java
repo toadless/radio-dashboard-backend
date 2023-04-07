@@ -36,7 +36,7 @@ public class DatabaseModule extends Module
     private void initTables()
     {
         LOGGER.debug("Initialise table guilds.");
-        //initTable("guilds");
+        initTable("guilds");
 
         LOGGER.debug("Table setup complete.");
     }
