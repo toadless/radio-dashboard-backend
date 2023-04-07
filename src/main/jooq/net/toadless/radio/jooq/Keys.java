@@ -4,9 +4,14 @@
 package net.toadless.radio.jooq;
 
 
+import net.toadless.radio.jooq.tables.DiscordTokens;
 import net.toadless.radio.jooq.tables.Guilds;
+import net.toadless.radio.jooq.tables.Users;
+import net.toadless.radio.jooq.tables.records.DiscordTokensRecord;
 import net.toadless.radio.jooq.tables.records.GuildsRecord;
+import net.toadless.radio.jooq.tables.records.UsersRecord;
 
+import org.jooq.ForeignKey;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.DSL;
@@ -24,5 +29,13 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<DiscordTokensRecord> DISCORD_TOKENS_PKEY = Internal.createUniqueKey(DiscordTokens.DISCORD_TOKENS, DSL.name("discord_tokens_pkey"), new TableField[] { DiscordTokens.DISCORD_TOKENS.USERS_ID }, true);
     public static final UniqueKey<GuildsRecord> GUILDS_PKEY = Internal.createUniqueKey(Guilds.GUILDS, DSL.name("guilds_pkey"), new TableField[] { Guilds.GUILDS.GUILD_ID }, true);
+    public static final UniqueKey<UsersRecord> USERS_PKEY = Internal.createUniqueKey(Users.USERS, DSL.name("users_pkey"), new TableField[] { Users.USERS.USER_ID }, true);
+
+    // -------------------------------------------------------------------------
+    // FOREIGN KEY definitions
+    // -------------------------------------------------------------------------
+
+    public static final ForeignKey<DiscordTokensRecord, UsersRecord> DISCORD_TOKENS__DISCORD_TOKENS_USERS_ID_FKEY = Internal.createForeignKey(DiscordTokens.DISCORD_TOKENS, DSL.name("discord_tokens_users_id_fkey"), new TableField[] { DiscordTokens.DISCORD_TOKENS.USERS_ID }, Keys.USERS_PKEY, new TableField[] { Users.USERS.USER_ID }, true);
 }

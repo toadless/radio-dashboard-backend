@@ -4,7 +4,9 @@
 package net.toadless.radio.jooq;
 
 
+import net.toadless.radio.jooq.tables.DiscordTokens;
 import net.toadless.radio.jooq.tables.Guilds;
+import net.toadless.radio.jooq.tables.Users;
 
 
 /**
@@ -14,7 +16,17 @@ import net.toadless.radio.jooq.tables.Guilds;
 public class Tables {
 
     /**
+     * The table <code>public.discord_tokens</code>.
+     */
+    public static final DiscordTokens DISCORD_TOKENS = DiscordTokens.DISCORD_TOKENS;
+
+    /**
      * The table <code>public.guilds</code>.
      */
     public static final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.users</code>.
+     */
+    public static final Users USERS = Users.USERS;
 }
