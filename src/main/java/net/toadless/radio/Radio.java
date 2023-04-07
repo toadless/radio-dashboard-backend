@@ -85,12 +85,12 @@ public class Radio extends ListenerAdapter
                 .setShardsTotal(-1)
 
                 .addEventListeners(
-                        this,
+                        this
+                )
+                .addEventListeners(
                         modules.getModules()
                 )
 
-                .setActivity(Activity.playing("loading..."))
-                .setStatus(OnlineStatus.DO_NOT_DISTURB)
                 .build();
     }
 

@@ -1,0 +1,25 @@
+############################################################
+#                _____           _ _                       #
+#               |  __ \         | (_)                      #
+#               | |__) |__ _  __| |_  ___                  #
+#               |  _  // _` |/ _` | |/ _ \                 #
+#               | | \ \ (_| | (_| | | (_) |                #
+#               |_|  \_\__,_|\__,_|_|\___/                 #
+#                                                          #
+#      This is the configuration for Radio Backend...      #
+#    https://github.com/toadless/radio-dashboard-backend   #
+# If you have any questions ask toadless#0001 on discord!  #
+############################################################
+
+# The port that Radio's webserver is going to run on, this isn't important...!
+port: 4444
+
+# The token required for Radio to log in... (get it here: https://discord.com/developers/applications)
+token: "bot_token"
+
+# Credentials to connect to a postgresql database...
+database:
+  username: "database_username"
+  password: "database_password"
+  url: "database_url"
+  driver: "org.postgresql.Driver" # Dont touch this, Radio has only been designed to use a postgresql db!
