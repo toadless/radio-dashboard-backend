@@ -7,7 +7,9 @@ package net.toadless.radio.jooq;
 import java.util.Arrays;
 import java.util.List;
 
+import net.toadless.radio.jooq.tables.DiscordTokens;
 import net.toadless.radio.jooq.tables.Guilds;
+import net.toadless.radio.jooq.tables.Users;
 
 import org.jooq.Catalog;
 import org.jooq.Table;
@@ -28,9 +30,19 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
+     * The table <code>public.discord_tokens</code>.
+     */
+    public final DiscordTokens DISCORD_TOKENS = DiscordTokens.DISCORD_TOKENS;
+
+    /**
      * The table <code>public.guilds</code>.
      */
     public final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.users</code>.
+     */
+    public final Users USERS = Users.USERS;
 
     /**
      * No further instances allowed
@@ -48,7 +60,9 @@ public class Public extends SchemaImpl {
     @Override
     public final List<Table<?>> getTables() {
         return Arrays.asList(
-            Guilds.GUILDS
+            DiscordTokens.DISCORD_TOKENS,
+            Guilds.GUILDS,
+            Users.USERS
         );
     }
 }

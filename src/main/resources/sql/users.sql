@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS users
+(
+    user_id BIGINT NOT NULL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    discriminator VARCHAR(4) NOT NULL,
+    avatar VARCHAR NULL
+);
