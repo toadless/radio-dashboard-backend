@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'net.toadless.radio'
-mainClassName = "net.toadless.radio.main"
+mainClassName = "net.toadless.radio.Main"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_15
