@@ -1,12 +1,14 @@
 package net.toadless.radio.util;
 
 import io.javalin.http.BadRequestResponse;
+import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.Header;
 import io.javalin.http.InternalServerErrorResponse;
 import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import net.toadless.radio.Constants;
 import net.toadless.radio.Radio;
+import net.toadless.radio.modules.OAuth2Module;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.oauth2.Guild;
 import net.toadless.radio.objects.oauth2.Session;
@@ -93,6 +95,13 @@ public class WebUtils
 
         try (Response response = radio.getOkHttpClient().newCall(request).execute())
         {
+            if (response.code() == 401)
+            {
+                LOGGER.debug(session.getId() + " has deauthorized Radio");
+                radio.getModules().get(OAuth2Module.class).removeUser(session.getId());
+                throw new ForbiddenResponse("Radio was deauthorized from your discord account");
+            }
+
             if (response.code() != 200)
             {
                 LOGGER.error("Unable to refresh session");
@@ -133,6 +142,13 @@ public class WebUtils
 
         try (Response response = radio.getOkHttpClient().newCall(request).execute())
         {
+            if (response.code() == 401)
+            {
+                LOGGER.debug(session.getId() + " has deauthorized Radio");
+                radio.getModules().get(OAuth2Module.class).removeUser(session.getId());
+                throw new ForbiddenResponse("Radio was deauthorized from your discord account");
+            }
+
             if (response.code() != 200)
             {
                 LOGGER.error("Unable to fetch user data");
@@ -162,6 +178,14 @@ public class WebUtils
 
         try (Response response = radio.getOkHttpClient().newCall(request).execute())
         {
+            System.out.println("hi");
+            if (response.code() == 401)
+            {
+                LOGGER.debug(session.getId() + " has deauthorized Radio");
+                radio.getModules().get(OAuth2Module.class).removeUser(session.getId());
+                throw new ForbiddenResponse("Radio was deauthorized from your discord account");
+            }
+
             if (response.code() != 200)
             {
                 LOGGER.error("Unable to fetch user guilds");
