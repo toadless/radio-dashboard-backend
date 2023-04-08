@@ -4,7 +4,10 @@ import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
 import net.toadless.radio.Radio;
+import net.toadless.radio.modules.AuthModule;
 import net.toadless.radio.modules.OAuth2Module;
+import net.toadless.radio.objects.auth.UserTokens;
+import net.toadless.radio.objects.config.ConfigOption;
 import org.jetbrains.annotations.NotNull;
 
 public class CallbackRoute implements Handler
@@ -26,8 +29,15 @@ public class CallbackRoute implements Handler
             throw new BadRequestResponse("No 'code' found in request url");
         }
 
-        radio.getModules().get(OAuth2Module.class).createSession(code);
+        long userId = radio.getModules().get(OAuth2Module.class).createSession(code);
+        UserTokens userTokens = radio.getModules().get(AuthModule.class).generateUserTokens(userId);
 
-        // TODO: generate jwts
+        ctx.redirect(new StringBuilder()
+                .append(radio.getConfiguration().getString(ConfigOption.REDIRECT_URL))
+                .append("?access_token=")
+                .append(userTokens.getAccessToken())
+                .append("&refresh_token=")
+                .append(userTokens.getRefreshToken())
+                .toString());
     }
 }

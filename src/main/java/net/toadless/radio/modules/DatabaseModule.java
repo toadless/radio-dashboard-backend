@@ -38,6 +38,15 @@ public class DatabaseModule extends Module
         LOGGER.debug("Initialise table guilds.");
         initTable("guilds");
 
+        LOGGER.debug("Initialise table users.");
+        initTable("users");
+
+        LOGGER.debug("Initialise table discord_tokens.");
+        initTable("discord_tokens");
+
+        LOGGER.debug("Initialise table refresh_tokens.");
+        initTable("refresh_tokens");
+
         LOGGER.debug("Table setup complete.");
     }
 
