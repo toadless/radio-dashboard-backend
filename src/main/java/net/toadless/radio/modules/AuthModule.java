@@ -1,5 +1,7 @@
 package net.toadless.radio.modules;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -7,11 +9,11 @@ import net.toadless.radio.Radio;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.module.Module;
 import net.toadless.radio.objects.module.Modules;
-import org.jooq.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
+import java.util.UUID;
 
 public class AuthModule extends Module
 {
@@ -36,5 +38,25 @@ public class AuthModule extends Module
 
         this.accessTokenParser = Jwts.parserBuilder().setSigningKey(accessTokenKey).build();
         this.refreshTokenParser = Jwts.parserBuilder().setSigningKey(refreshTokenKey).build();
+    }
+
+    private String generateAccessToken(long userId)
+    {
+        return null;
+    }
+
+    private String generateRefreshToken(long userId, UUID uuid)
+    {
+        return null;
+    }
+
+    public Jws<Claims> parseAccessToken(String token)
+    {
+        return accessTokenParser.parseClaimsJws(token);
+    }
+
+    public Jws<Claims> parseRefreshToken(String token)
+    {
+        return refreshTokenParser.parseClaimsJws(token);
     }
 }
