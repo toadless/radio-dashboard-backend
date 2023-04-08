@@ -10,11 +10,14 @@ import net.toadless.radio.objects.oauth2.Guild;
 import net.toadless.radio.objects.oauth2.Scope;
 import net.toadless.radio.objects.oauth2.Session;
 import net.toadless.radio.objects.oauth2.User;
+import net.toadless.radio.util.DatabaseUtils;
+import net.toadless.radio.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +58,20 @@ public class OAuth2Module extends Module
 
     private Session fetchSession(long userId)
     {
-        return null;
+        Session session = DatabaseUtils.fetchSession(radio, userId);
+
+        if (session == null)
+        {
+            return null;
+        }
+
+        if (LocalDateTime.now().isBefore(session.getExpiry()))
+        {
+            // REFRESH SESSION
+            return null;
+        }
+
+        return session;
     }
 
     private User fetchUser(long userId)

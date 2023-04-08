@@ -13,6 +13,11 @@ public class EncryptUtils
 {
     private final Logger LOGGER = LoggerFactory.getLogger(EncryptUtils.class);
 
+    private EncryptUtils()
+    {
+        //Overrides the default, public, constructor
+    }
+
     public String encrypt(String value, SecretKey key, String algorithm)
     {
         try
