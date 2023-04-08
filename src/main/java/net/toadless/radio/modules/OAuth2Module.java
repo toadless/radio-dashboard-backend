@@ -2,6 +2,7 @@ package net.toadless.radio.modules;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import net.dv8tion.jda.api.Permission;
 import net.toadless.radio.Constants;
 import net.toadless.radio.Radio;
 import net.toadless.radio.objects.config.ConfigOption;
@@ -23,6 +24,7 @@ import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class OAuth2Module extends Module
 {
@@ -34,8 +36,7 @@ public class OAuth2Module extends Module
     private final SecretKey secretKey;
     private final LoadingCache<Long, Session> sessions;
     private final LoadingCache<Long, User> users;
-    private final LoadingCache<Long, Set<Long>> userGuilds;
-    private final LoadingCache<Long, Guild> guilds;
+    private final LoadingCache<Long, Set<Guild>> userGuilds;
 
     public OAuth2Module(Radio radio, Modules modules)
     {
@@ -54,15 +55,16 @@ public class OAuth2Module extends Module
                 .refreshAfterWrite(2, TimeUnit.MINUTES)
                 .recordStats()
                 .build(this::fetchUserGuilds);
-        this.guilds = Caffeine.newBuilder()
-                .expireAfterAccess(1, TimeUnit.HOURS)
-                .recordStats()
-                .build(this::fetchGuild);
     }
 
     public User getUser(long userId)
     {
         return users.get(userId);
+    }
+
+    public Set<Guild> getUserGuilds(long userId)
+    {
+        return userGuilds.get(userId);
     }
 
     public long createSession(String code)
@@ -127,17 +129,28 @@ public class OAuth2Module extends Module
             return user;
         }
 
-        return WebUtils.fetchUserData(radio, sessions.get(userId));
+        Session session = sessions.get(userId);
+
+        if (session == null)
+        {
+            return null;
+        }
+
+        return WebUtils.fetchUserData(radio, session);
     }
 
-    private Set<Long> fetchUserGuilds(long userId)
+    private Set<Guild> fetchUserGuilds(long userId)
     {
-        return null;
-    }
+        Session session = sessions.get(userId);
 
-    private Guild fetchGuild(long guildId)
-    {
-        return null;
+        if (session == null)
+        {
+            return null;
+        }
+
+        return WebUtils.fetchUserGuilds(radio, session).stream().filter(guild ->
+                guild.getPermissions().contains(Permission.MANAGE_SERVER) ||
+                        guild.getPermissions().contains(Permission.ADMINISTRATOR)).collect(Collectors.toSet());
     }
 
     public SecretKey getSecretKey()

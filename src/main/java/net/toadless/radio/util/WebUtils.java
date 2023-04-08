@@ -3,6 +3,7 @@ package net.toadless.radio.util;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Header;
 import io.javalin.http.InternalServerErrorResponse;
+import net.dv8tion.jda.api.utils.data.DataArray;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import net.toadless.radio.Constants;
 import net.toadless.radio.Radio;
@@ -19,7 +20,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
+
+import static net.dv8tion.jda.api.entities.Guild.ICON_URL;
 
 public class WebUtils
 {
@@ -150,6 +154,46 @@ public class WebUtils
 
     public static Set<Guild> fetchUserGuilds(Radio radio, Session session)
     {
-        return null;
+        Request request = new Request.Builder()
+                .url(Constants.DISCORD_API + "/users/@me/guilds")
+                .header(Header.AUTHORIZATION, "Bearer " + session.getAccessToken())
+                .get()
+                .build();
+
+        try (Response response = radio.getOkHttpClient().newCall(request).execute())
+        {
+            if (response.code() != 200)
+            {
+                LOGGER.error("Unable to fetch user guilds");
+                throw new InternalServerErrorResponse("Something went wrong...");
+            }
+
+            try (ResponseBody body = response.body())
+            {
+                DataArray json = DataArray.fromJson(body.string());
+                Set<Guild> result = new HashSet<>();
+
+                for (int i = 0; i < json.length(); i++)
+                {
+                    DataObject guild = json.getObject(i);
+                    result.add(new Guild(
+                            guild.getLong("id"),
+                            guild.getString("name"),
+                            String.format(
+                                    ICON_URL,
+                                    guild.getLong("id"),
+                                    (guild.opt("icon").isPresent() ? guild.getString("icon") : null),
+                                    "FILE_EXTENSION").replace(".FILE_EXTENSION", ""),
+                            guild.getLong("permissions")
+                    ));
+                }
+
+                return result;
+            }
+        } catch (IOException e)
+        {
+            LOGGER.error("Unable to fetch user guilds");
+            throw new InternalServerErrorResponse("Something went wrong...");
+        }
     }
 }
