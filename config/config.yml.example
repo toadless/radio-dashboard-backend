@@ -15,7 +15,32 @@
 port: 4444
 
 # The token required for Radio to log in... (get it here: https://discord.com/developers/applications)
-token: "bot_token"
+token: "token"
+
+# The client_id required for OAuth2 to log in... (get it here: https://discord.com/developers/applications)
+client_id: "client_id"
+
+# The client_secret required for OAuth2 to log in... (get it here: https://discord.com/developers/applications)
+client_secret: "client_secret"
+
+# The location the user gets redirected to, once authentication has finished
+# the url params will contain the users access_token and refresh_token
+redirect_url: "redirect_url"
+
+oauth2:
+  # A random value used to encrypt access & refresh tokens, make sure its 32 characters long
+  key: "random_32_char_value"
+  # The url that this server is running on, used to generate a redirect_uri
+  url: "server_url"
+
+jwt:
+  # Random Secrets used to generate & parse JWTs
+  access_token_secret: "secret_value"
+  refresh_token_secret: "secret_value"
+
+  # JWT Metadata
+  issuer: "jwt_issuer"
+  audience: "jwt_audience"
 
 # Credentials to connect to a postgresql database...
 database:
