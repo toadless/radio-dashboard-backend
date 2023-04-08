@@ -11,14 +11,14 @@ import java.util.Base64;
 
 public class EncryptUtils
 {
-    private final Logger LOGGER = LoggerFactory.getLogger(EncryptUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(EncryptUtils.class);
 
     private EncryptUtils()
     {
         //Overrides the default, public, constructor
     }
 
-    public String encrypt(String value, SecretKey key, String algorithm)
+    public static String encrypt(String value, SecretKey key, String algorithm)
     {
         try
         {
@@ -33,7 +33,7 @@ public class EncryptUtils
         }
     }
 
-    public String decrypt(String value, SecretKey key, String algorithm)
+    public static String decrypt(String value, SecretKey key, String algorithm)
     {
         try
         {

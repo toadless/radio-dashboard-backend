@@ -76,7 +76,46 @@ public class WebUtils
 
     public static Session refreshExpiredSession(Radio radio, Session session)
     {
-        return null;
+        Request request = new Request.Builder()
+                .url(Constants.DISCORD_API + "/oauth2/token")
+                .post(new FormBody.Builder()
+                        .add("client_id", radio.getConfiguration().getString(ConfigOption.CLIENT_ID))
+                        .add("client_secret", radio.getConfiguration().getString(ConfigOption.CLIENT_SECRET))
+                        .add("grant_type", "refresh_token")
+                        .add("refresh_token", session.getRefreshToken())
+                        .build())
+                .build();
+
+        try (Response response = radio.getOkHttpClient().newCall(request).execute())
+        {
+            if (response.code() != 200)
+            {
+                LOGGER.error("Unable to refresh session");
+                throw new InternalServerErrorResponse("Something went wrong...");
+            }
+
+            try (ResponseBody body = response.body())
+            {
+                DataObject json = DataObject.fromJson(body.string());
+
+                String accessToken = json.getString("access_token");
+                String refreshToken = json.getString("refresh_token");
+                LocalDateTime expiry = LocalDateTime.now().plusSeconds(json.getInt("expires_in"));
+
+                User user = fetchUserData(radio, new Session(-1,
+                        accessToken, refreshToken, expiry));
+
+                // Update user in db
+                DatabaseUtils.registerUser(radio, user);
+
+                // These tokens are not yet encrypted
+                return new Session(user.getId(), accessToken, refreshToken, expiry);
+            }
+        } catch (IOException e)
+        {
+            LOGGER.error("Unable to refresh user session");
+            throw new InternalServerErrorResponse("Something went wrong...");
+        }
     }
 
     public static User fetchUserData(Radio radio, Session session)

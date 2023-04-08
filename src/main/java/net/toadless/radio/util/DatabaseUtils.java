@@ -6,6 +6,7 @@ import net.toadless.radio.jooq.Tables;
 import net.toadless.radio.jooq.tables.records.DiscordTokensRecord;
 import net.toadless.radio.jooq.tables.records.UsersRecord;
 import net.toadless.radio.modules.DatabaseModule;
+import net.toadless.radio.modules.OAuth2Module;
 import net.toadless.radio.objects.oauth2.Session;
 import net.toadless.radio.objects.oauth2.User;
 import org.slf4j.Logger;
@@ -27,8 +28,10 @@ public class DatabaseUtils
         LOGGER.debug("Registered session " + session.getId());
         try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
         {
-            DiscordTokensRecord record = new DiscordTokensRecord(session.getId(), session.getAccessToken(),
-                    session.getRefreshToken(), session.getExpiry());
+            DiscordTokensRecord record = new DiscordTokensRecord(session.getId(), EncryptUtils.encrypt(
+                    session.getAccessToken(), radio.getModules().get(OAuth2Module.class).getSecretKey(), OAuth2Module.ALGORITHM),
+                    EncryptUtils.encrypt(session.getRefreshToken(), radio.getModules().get(OAuth2Module.class).getSecretKey(),
+                            OAuth2Module.ALGORITHM), session.getExpiry());
 
             var context = radio.getModules().get(DatabaseModule.class).getContext(connection)
                     .insertInto(Tables.DISCORD_TOKENS)
@@ -59,8 +62,10 @@ public class DatabaseUtils
             var result = existsQuery.fetch().get(0);
             existsQuery.close();
 
-            return new Session(result.getUsersId(), result.getAccessToken(),
-                    result.getRefreshToken(), result.getExpiry());
+            return new Session(result.getUsersId(), EncryptUtils.decrypt(result.getAccessToken(),
+                    radio.getModules().get(OAuth2Module.class).getSecretKey(), OAuth2Module.ALGORITHM),
+                    EncryptUtils.decrypt(result.getRefreshToken(), radio.getModules().get(OAuth2Module.class)
+                            .getSecretKey(), OAuth2Module.ALGORITHM), result.getExpiry());
         }
         catch (Exception exception)
         {

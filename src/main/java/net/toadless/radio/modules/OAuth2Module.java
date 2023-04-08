@@ -25,7 +25,8 @@ public class OAuth2Module extends Module
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2Module.class);
     private static final Scope[] SCOPES = { Scope.IDENTIFY, Scope.GUILDS };
-    private static final String ALGORITHM = "AES";
+
+    public static final String ALGORITHM = "AES";
 
     private final SecretKey secretKey;
     private final LoadingCache<Long, Session> sessions;
@@ -56,6 +57,13 @@ public class OAuth2Module extends Module
                 .build(this::fetchGuild);
     }
 
+    private Session refreshUserSession(Session expiredSession)
+    {
+        Session session = WebUtils.refreshExpiredSession(radio, expiredSession);
+        DatabaseUtils.registerSession(radio, session);
+        return session;
+    }
+
     private Session fetchSession(long userId)
     {
         Session session = DatabaseUtils.fetchSession(radio, userId);
@@ -67,8 +75,7 @@ public class OAuth2Module extends Module
 
         if (LocalDateTime.now().isBefore(session.getExpiry()))
         {
-            // REFRESH SESSION
-            return null;
+            return refreshUserSession(session);
         }
 
         return session;
@@ -87,5 +94,10 @@ public class OAuth2Module extends Module
     private Guild fetchGuild(long guildId)
     {
         return null;
+    }
+
+    public SecretKey getSecretKey()
+    {
+        return secretKey;
     }
 }
