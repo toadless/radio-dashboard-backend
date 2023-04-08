@@ -21,7 +21,6 @@ import javax.crypto.SecretKey;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 public class AuthModule extends Module
 {

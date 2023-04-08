@@ -178,7 +178,6 @@ public class WebUtils
 
         try (Response response = radio.getOkHttpClient().newCall(request).execute())
         {
-            System.out.println("hi");
             if (response.code() == 401)
             {
                 LOGGER.debug(session.getId() + " has deauthorized Radio");
