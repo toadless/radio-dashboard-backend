@@ -67,7 +67,7 @@ public class AuthModule extends Module
         {
             Jws<Claims> jwt = parseRefreshToken(token);
 
-            if (jwt.getBody().getSubject().equals(REFRESH_TOKEN_SUBJECT))
+            if (!jwt.getBody().getSubject().equals(REFRESH_TOKEN_SUBJECT))
             {
                 throw new BadRequestResponse("Invalid subject in 'refresh_token' body");
             }
@@ -75,7 +75,7 @@ public class AuthModule extends Module
             String jti = jwt.getBody().get("jti", String.class);
 
             RefreshTokensRecord refreshToken = RefreshToken.getRefreshToken(radio, UUID.fromString(jti));
-            if (refreshToken.getUserId().equals(jwt.getBody().get("id", Long.class)))
+            if (refreshToken.getUserId().equals(Long.parseLong(jwt.getBody().get("id").toString())))
             {
                 // Something fishy is going on (should never come up)
                 throw new UnauthorizedResponse("This 'refresh_token' is malformed");
@@ -104,18 +104,19 @@ public class AuthModule extends Module
         {
             Jws<Claims> jwt = parseAccessToken(token);
 
-            if (jwt.getBody().getSubject().equals(ACCESS_TOKEN_SUBJECT))
+            if (!jwt.getBody().getSubject().equals(ACCESS_TOKEN_SUBJECT))
             {
                 throw new BadRequestResponse("Invalid subject in 'access_token' body");
             }
 
-            long userId = jwt.getBody().get("id", Long.class);
+            long userId = Long.parseLong(jwt.getBody().get("id").toString());
             ctx.attribute("user_id", userId);
         } catch (ExpiredJwtException e)
         {
             throw new UnauthorizedResponse("The provided 'access_token' has expired");
         } catch (JwtException e)
         {
+            System.out.println(e);
             throw new UnauthorizedResponse("The provided 'access_token' is invalid");
         }
     }
@@ -124,7 +125,7 @@ public class AuthModule extends Module
     {
         return Jwts.builder()
                 .setSubject(ACCESS_TOKEN_SUBJECT)
-                .claim("id", userId)
+                .claim("id", String.valueOf(userId))
                 .setIssuer(radio.getConfiguration().getString(ConfigOption.JWT_ISSUER))
                 .setAudience(radio.getConfiguration().getString(ConfigOption.JWT_AUDIENCE))
                 .setIssuedAt(Date.from(Instant.now()))
@@ -137,8 +138,8 @@ public class AuthModule extends Module
     {
         return Jwts.builder()
                 .setSubject(REFRESH_TOKEN_SUBJECT)
-                .claim("id", userId)
-                .claim("jti", jti)
+                .claim("id", String.valueOf(userId))
+                .claim("jti", jti.toString())
                 .setIssuer(radio.getConfiguration().getString(ConfigOption.JWT_ISSUER))
                 .setAudience(radio.getConfiguration().getString(ConfigOption.JWT_AUDIENCE))
                 .setIssuedAt(Date.from(Instant.now()))
