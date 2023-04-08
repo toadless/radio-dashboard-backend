@@ -46,8 +46,6 @@ public class AuthModule extends Module
 
         this.accessTokenParser = Jwts.parserBuilder().setSigningKey(accessTokenKey).build();
         this.refreshTokenParser = Jwts.parserBuilder().setSigningKey(refreshTokenKey).build();
-
-        modules.addRepeatingTask(() -> RefreshToken.removeExpiredRefreshTokens(radio), TimeUnit.MINUTES, 2);
     }
 
     public UserTokens generateUserTokens(long userId)

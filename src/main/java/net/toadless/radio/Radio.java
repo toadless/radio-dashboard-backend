@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.config.Configuration;
+import net.toadless.radio.objects.database.RefreshToken;
 import net.toadless.radio.objects.info.BotInfo;
 import net.toadless.radio.objects.module.Modules;
 import okhttp3.OkHttpClient;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.login.LoginException;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class Radio extends ListenerAdapter
 {
@@ -103,6 +105,8 @@ public class Radio extends ListenerAdapter
         getLogger().info("JDA Version:     " + JDAInfo.VERSION);
         getLogger().info("Radio Version:   " + Constants.VERSION);
         getLogger().info("JVM Version:     " + BotInfo.getJavaVersion());
+
+        modules.addRepeatingTask(() -> RefreshToken.removeExpiredRefreshTokens(this), TimeUnit.MINUTES, 2);
     }
 
     public SelfUser getSelfUser()
