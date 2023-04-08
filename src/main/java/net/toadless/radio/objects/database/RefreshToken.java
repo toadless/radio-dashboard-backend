@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static net.toadless.radio.jooq.tables.RefreshTokens.REFRESH_TOKENS;
@@ -108,5 +110,31 @@ public class RefreshToken
         }
 
         return jti;
+    }
+
+    public static void removeExpiredRefreshTokens(Radio radio)
+    {
+        try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
+        {
+            var context = radio.getModules().get(DatabaseModule.class).getContext(connection)
+                    .selectFrom(Tables.REFRESH_TOKENS);
+
+            for (var token : context.fetch())
+            {
+                if (token.getExpiry().isBefore(LocalDateTime.now()))
+                {
+                    // Remove Token
+                    radio.getModules().get(DatabaseModule.class).getContext(connection)
+                            .deleteFrom(Tables.REFRESH_TOKENS).where(REFRESH_TOKENS.TOKEN_ID.eq(token.getTokenId())
+                            .and(REFRESH_TOKENS.USER_ID.eq(token.getUserId()))).execute();
+
+                    LOGGER.debug("Removed expired refresh_token " + token.getTokenId());
+                }
+            }
+        }
+        catch (Exception exception)
+        {
+            radio.getLogger().error("An SQL error occurred", exception);
+        }
     }
 }

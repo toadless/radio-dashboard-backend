@@ -5,8 +5,6 @@ package net.toadless.radio.jooq.tables;
 
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 
 import net.toadless.radio.jooq.Keys;
 import net.toadless.radio.jooq.Public;
@@ -109,23 +107,6 @@ public class DiscordTokens extends TableImpl<DiscordTokensRecord> {
     @Override
     public UniqueKey<DiscordTokensRecord> getPrimaryKey() {
         return Keys.DISCORD_TOKENS_PKEY;
-    }
-
-    @Override
-    public List<ForeignKey<DiscordTokensRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.DISCORD_TOKENS__DISCORD_TOKENS_USER_ID_FKEY);
-    }
-
-    private transient Users _users;
-
-    /**
-     * Get the implicit join path to the <code>public.users</code> table.
-     */
-    public Users users() {
-        if (_users == null)
-            _users = new Users(this, Keys.DISCORD_TOKENS__DISCORD_TOKENS_USER_ID_FKEY);
-
-        return _users;
     }
 
     @Override

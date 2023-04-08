@@ -19,6 +19,7 @@ import javax.crypto.SecretKey;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class AuthModule extends Module
 {
@@ -43,6 +44,8 @@ public class AuthModule extends Module
 
         this.accessTokenParser = Jwts.parserBuilder().setSigningKey(accessTokenKey).build();
         this.refreshTokenParser = Jwts.parserBuilder().setSigningKey(refreshTokenKey).build();
+
+        modules.addRepeatingTask(() -> RefreshToken.removeExpiredRefreshTokens(radio), TimeUnit.MINUTES, 2);
     }
 
     public UserTokens generateUserTokens(long userId)

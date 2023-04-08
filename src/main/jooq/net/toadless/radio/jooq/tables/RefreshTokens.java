@@ -5,8 +5,6 @@ package net.toadless.radio.jooq.tables;
 
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 import net.toadless.radio.jooq.Keys;
@@ -105,23 +103,6 @@ public class RefreshTokens extends TableImpl<RefreshTokensRecord> {
     @Override
     public UniqueKey<RefreshTokensRecord> getPrimaryKey() {
         return Keys.REFRESH_TOKENS_PKEY;
-    }
-
-    @Override
-    public List<ForeignKey<RefreshTokensRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.REFRESH_TOKENS__REFRESH_TOKENS_USER_ID_FKEY);
-    }
-
-    private transient Users _users;
-
-    /**
-     * Get the implicit join path to the <code>public.users</code> table.
-     */
-    public Users users() {
-        if (_users == null)
-            _users = new Users(this, Keys.REFRESH_TOKENS__REFRESH_TOKENS_USER_ID_FKEY);
-
-        return _users;
     }
 
     @Override
