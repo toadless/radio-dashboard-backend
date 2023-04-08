@@ -20,6 +20,6 @@ public class GuildConfigRoute implements Handler
         @SuppressWarnings("ConstantConditions")
         long guildId = ctx.attribute("guild_id");
 
-        
+
     }
 }
