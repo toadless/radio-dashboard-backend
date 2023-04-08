@@ -1,5 +1,7 @@
 package net.toadless.radio.modules;
 
+import io.javalin.http.BadRequestResponse;
+import io.javalin.http.Context;
 import io.javalin.http.UnauthorizedResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -10,6 +12,7 @@ import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.database.RefreshToken;
 import net.toadless.radio.objects.module.Module;
 import net.toadless.radio.objects.module.Modules;
+import net.toadless.radio.util.AuthUtils;
 import net.toadless.radio.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,6 +66,12 @@ public class AuthModule extends Module
         try
         {
             Jws<Claims> jwt = parseRefreshToken(token);
+
+            if (jwt.getBody().getSubject().equals(REFRESH_TOKEN_SUBJECT))
+            {
+                throw new BadRequestResponse("Invalid subject in 'refresh_token' body");
+            }
+
             String jti = jwt.getBody().get("jti", String.class);
 
             RefreshTokensRecord refreshToken = RefreshToken.getRefreshToken(radio, UUID.fromString(jti));
@@ -82,6 +91,32 @@ public class AuthModule extends Module
         } catch (JwtException e)
         {
             throw new UnauthorizedResponse("The provided 'refresh_token' is invalid");
+        }
+    }
+
+    public void authenticateUser(Context ctx)
+    {
+        if (AuthUtils.isOptionsRequest(ctx)) return;
+
+        String token = AuthUtils.pullAccessTokenFromAuthorizationHeader(ctx);
+
+        try
+        {
+            Jws<Claims> jwt = parseAccessToken(token);
+
+            if (jwt.getBody().getSubject().equals(ACCESS_TOKEN_SUBJECT))
+            {
+                throw new BadRequestResponse("Invalid subject in 'access_token' body");
+            }
+
+            long userId = jwt.getBody().get("id", Long.class);
+            ctx.attribute("user_id", userId);
+        } catch (ExpiredJwtException e)
+        {
+            throw new UnauthorizedResponse("The provided 'access_token' has expired");
+        } catch (JwtException e)
+        {
+            throw new UnauthorizedResponse("The provided 'access_token' is invalid");
         }
     }
 
