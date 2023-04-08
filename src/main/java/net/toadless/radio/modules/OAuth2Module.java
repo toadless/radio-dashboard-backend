@@ -2,7 +2,6 @@ package net.toadless.radio.modules;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import io.javalin.http.BadRequestResponse;
 import net.dv8tion.jda.api.Permission;
 import net.toadless.radio.Constants;
 import net.toadless.radio.Radio;
