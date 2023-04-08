@@ -15,6 +15,7 @@ import net.toadless.radio.web.auth.AuthorizeRoute;
 import net.toadless.radio.web.auth.CallbackRoute;
 import net.toadless.radio.web.auth.TokenRoute;
 import net.toadless.radio.web.guild.GuildConfigRoute;
+import net.toadless.radio.web.guild.GuildDJRoleRoute;
 import net.toadless.radio.web.guild.GuildPrefixRoute;
 import net.toadless.radio.web.guild.GuildRolesRoute;
 import net.toadless.radio.web.user.GuildsRoute;
@@ -59,6 +60,7 @@ public class WebModule extends Module
                             path("/config", () -> get(new GuildConfigRoute(radio)));
                             path("/roles", () -> get(new GuildRolesRoute(radio)));
                             path("/prefix", () -> patch(new GuildPrefixRoute(radio)));
+                            path("/dj", () -> patch(new GuildDJRoleRoute(radio)));
                         });
                     });
                     path("/health", () -> get(ctx -> ctx.result("Healthy")));
