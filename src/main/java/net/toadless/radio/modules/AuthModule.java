@@ -42,12 +42,21 @@ public class AuthModule extends Module
 
     private String generateAccessToken(long userId)
     {
-        return null;
+        return Jwts.builder()
+                .setSubject(ACCESS_TOKEN_SUBJECT)
+                .claim("id", userId)
+                .signWith(accessTokenKey)
+                .compact();
     }
 
-    private String generateRefreshToken(long userId, UUID uuid)
+    private String generateRefreshToken(long userId, UUID jti)
     {
-        return null;
+        return Jwts.builder()
+                .setSubject(REFRESH_TOKEN_SUBJECT)
+                .claim("id", userId)
+                .claim("jti", jti)
+                .signWith(refreshTokenKey)
+                .compact();
     }
 
     public Jws<Claims> parseAccessToken(String token)
