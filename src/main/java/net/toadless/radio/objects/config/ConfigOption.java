@@ -12,6 +12,10 @@ public enum ConfigOption
     OAUTH2_KEY("oauth2.key"),
     OAUTH2_URL("oauth2.url"),
 
+    // JWT
+    JWT_ACCESS_TOKEN_SECRET("jwt.access_token_secret"),
+    JWT_REFRESH_TOKEN_SECRET("jwt.refresh_token_secret"),
+
     DBUSERNAME("database.username"),
     DBPASSWORD("database.password"),
     DBURL("database.url"),
