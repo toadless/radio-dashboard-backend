@@ -1,16 +1,18 @@
 package net.toadless.radio.modules;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
+import io.javalin.http.BadRequestResponse;
+import io.javalin.http.Context;
+import io.javalin.http.UnauthorizedResponse;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import net.toadless.radio.Radio;
+import net.toadless.radio.jooq.tables.records.RefreshTokensRecord;
 import net.toadless.radio.objects.auth.UserTokens;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.database.RefreshToken;
 import net.toadless.radio.objects.module.Module;
 import net.toadless.radio.objects.module.Modules;
+import net.toadless.radio.util.AuthUtils;
 import net.toadless.radio.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,11 +61,71 @@ public class AuthModule extends Module
         return new UserTokens(accessToken, refreshToken);
     }
 
+    public UserTokens refreshUserTokens(String token)
+    {
+        try
+        {
+            Jws<Claims> jwt = parseRefreshToken(token);
+
+            if (!jwt.getBody().getSubject().equals(REFRESH_TOKEN_SUBJECT))
+            {
+                throw new BadRequestResponse("Invalid subject in 'refresh_token' body");
+            }
+
+            String jti = jwt.getBody().get("jti", String.class);
+
+            RefreshTokensRecord refreshToken = RefreshToken.getRefreshToken(radio, UUID.fromString(jti));
+            if (refreshToken.getUserId().equals(Long.parseLong(jwt.getBody().get("id").toString())))
+            {
+                // Something fishy is going on (should never come up)
+                throw new UnauthorizedResponse("This 'refresh_token' is malformed");
+            }
+
+            // invalidate refresh token
+            RefreshToken.removeRefreshToken(radio, refreshToken.getUserId(), refreshToken.getTokenId());
+
+            return generateUserTokens(refreshToken.getUserId());
+        } catch (ExpiredJwtException e)
+        {
+            throw new UnauthorizedResponse("The provided 'refresh_token' has expired");
+        } catch (JwtException e)
+        {
+            throw new UnauthorizedResponse("The provided 'refresh_token' is invalid");
+        }
+    }
+
+    public void authenticateUser(Context ctx)
+    {
+        if (AuthUtils.isOptionsRequest(ctx)) return;
+
+        String token = AuthUtils.pullAccessTokenFromAuthorizationHeader(ctx);
+
+        try
+        {
+            Jws<Claims> jwt = parseAccessToken(token);
+
+            if (!jwt.getBody().getSubject().equals(ACCESS_TOKEN_SUBJECT))
+            {
+                throw new BadRequestResponse("Invalid subject in 'access_token' body");
+            }
+
+            long userId = Long.parseLong(jwt.getBody().get("id").toString());
+            ctx.attribute("user_id", userId);
+        } catch (ExpiredJwtException e)
+        {
+            throw new UnauthorizedResponse("The provided 'access_token' has expired");
+        } catch (JwtException e)
+        {
+            System.out.println(e);
+            throw new UnauthorizedResponse("The provided 'access_token' is invalid");
+        }
+    }
+
     private String generateAccessToken(long userId)
     {
         return Jwts.builder()
                 .setSubject(ACCESS_TOKEN_SUBJECT)
-                .claim("id", userId)
+                .claim("id", String.valueOf(userId))
                 .setIssuer(radio.getConfiguration().getString(ConfigOption.JWT_ISSUER))
                 .setAudience(radio.getConfiguration().getString(ConfigOption.JWT_AUDIENCE))
                 .setIssuedAt(Date.from(Instant.now()))
@@ -76,8 +138,8 @@ public class AuthModule extends Module
     {
         return Jwts.builder()
                 .setSubject(REFRESH_TOKEN_SUBJECT)
-                .claim("id", userId)
-                .claim("jti", jti)
+                .claim("id", String.valueOf(userId))
+                .claim("jti", jti.toString())
                 .setIssuer(radio.getConfiguration().getString(ConfigOption.JWT_ISSUER))
                 .setAudience(radio.getConfiguration().getString(ConfigOption.JWT_AUDIENCE))
                 .setIssuedAt(Date.from(Instant.now()))
