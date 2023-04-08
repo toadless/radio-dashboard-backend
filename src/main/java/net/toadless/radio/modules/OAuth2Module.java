@@ -83,7 +83,14 @@ public class OAuth2Module extends Module
 
     private User fetchUser(long userId)
     {
-        return null;
+        User user = DatabaseUtils.fetchUser(radio, userId);
+
+        if (user != null)
+        {
+            return user;
+        }
+
+        return WebUtils.fetchUserData(radio, sessions.get(userId));
     }
 
     private Set<Long> fetchUserGuilds(long userId)

@@ -94,4 +94,29 @@ public class DatabaseUtils
             radio.getLogger().error("An SQL error occurred", exception);
         }
     }
+
+    public static User fetchUser(Radio radio, long userId)
+    {
+        try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
+        {
+            var context = radio.getModules().get(DatabaseModule.class).getContext(connection);
+            var existsQuery = context.selectFrom(Tables.USERS)
+                    .where(Tables.USERS.USER_ID.eq(userId));
+
+            if (existsQuery.fetch().isEmpty())
+            {
+                return null;
+            }
+
+            var result = existsQuery.fetch().get(0);
+            existsQuery.close();
+
+            return new User(result.getUserId(), result.getName(), result.getDiscriminator(), result.getAvatar());
+        }
+        catch (Exception exception)
+        {
+            radio.getLogger().error("An SQL error occurred", exception);
+            throw new InternalServerErrorResponse("Something went wrong...");
+        }
+    }
 }
