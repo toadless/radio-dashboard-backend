@@ -1,11 +1,10 @@
 package net.toadless.radio.modules;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
+import io.javalin.http.UnauthorizedResponse;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import net.toadless.radio.Radio;
+import net.toadless.radio.jooq.tables.records.RefreshTokensRecord;
 import net.toadless.radio.objects.auth.UserTokens;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.database.RefreshToken;
@@ -57,6 +56,33 @@ public class AuthModule extends Module
 
         LOGGER.debug("Generated tokens for " + userId);
         return new UserTokens(accessToken, refreshToken);
+    }
+
+    public UserTokens refreshUserTokens(String token)
+    {
+        try
+        {
+            Jws<Claims> jwt = parseRefreshToken(token);
+            String jti = jwt.getBody().get("jti", String.class);
+
+            RefreshTokensRecord refreshToken = RefreshToken.getRefreshToken(radio, UUID.fromString(jti));
+            if (refreshToken.getUserId().equals(jwt.getBody().get("id", Long.class)))
+            {
+                // Something fishy is going on (should never come up)
+                throw new UnauthorizedResponse("This 'refresh_token' is malformed");
+            }
+
+            // invalidate refresh token
+            RefreshToken.removeRefreshToken(radio, refreshToken.getUserId(), refreshToken.getTokenId());
+
+            return generateUserTokens(refreshToken.getUserId());
+        } catch (ExpiredJwtException e)
+        {
+            throw new UnauthorizedResponse("The provided 'refresh_token' has expired");
+        } catch (JwtException e)
+        {
+            throw new UnauthorizedResponse("The provided 'refresh_token' is invalid");
+        }
     }
 
     private String generateAccessToken(long userId)
