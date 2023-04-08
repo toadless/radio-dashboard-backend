@@ -12,6 +12,7 @@ import net.toadless.radio.objects.module.Module;
 import net.toadless.radio.objects.module.Modules;
 import net.toadless.radio.web.auth.AuthorizeRoute;
 import net.toadless.radio.web.auth.CallbackRoute;
+import net.toadless.radio.web.auth.TokenRoute;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
 
@@ -30,6 +31,7 @@ public class WebModule extends Module
                     {
                         path("/authorize", () -> get(new AuthorizeRoute(radio)));
                         path("/callback", () -> get(new CallbackRoute(radio)));
+                        path("/token", () -> post(new TokenRoute(radio)));
                     });
                     path("/health", () -> get(ctx -> ctx.result("Healthy")));
                 }).start(radio.getConfiguration().getInt(ConfigOption.PORT));
