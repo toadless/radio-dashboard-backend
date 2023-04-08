@@ -21,7 +21,7 @@ public class GuildConfig
         //Overrides the default, public, constructor
     }
 
-    public GuildsRecord getGuildConfig(Radio radio, long guildId)
+    public static GuildsRecord getGuildConfig(Radio radio, long guildId)
     {
         try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
         {
@@ -46,7 +46,7 @@ public class GuildConfig
         }
     }
 
-    public boolean setGuildPrefix(Radio radio, long guildId, String prefix)
+    public static boolean setGuildPrefix(Radio radio, long guildId, String prefix)
     {
         try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
         {
@@ -65,7 +65,7 @@ public class GuildConfig
         }
     }
 
-    public boolean setDJRole(Radio radio, long guildId, long djRole)
+    public static boolean setDJRole(Radio radio, long guildId, long djRole)
     {
         try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
         {
