@@ -2,6 +2,7 @@ package net.toadless.radio.modules;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import net.toadless.radio.Constants;
 import net.toadless.radio.Radio;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.module.Module;
@@ -17,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -55,6 +58,27 @@ public class OAuth2Module extends Module
                 .expireAfterAccess(1, TimeUnit.HOURS)
                 .recordStats()
                 .build(this::fetchGuild);
+    }
+
+    private String generateLoginUrl()
+    {
+        return new StringBuilder()
+                .append(Constants.DISCORD_API)
+                .append("/oauth2/authorize")
+                .append("?client_id=")
+                .append(radio.getConfiguration().getString(ConfigOption.CLIENT_ID))
+                .append("&redirect_url=")
+                .append(URLEncoder.encode(generateRedirectURI(), Charset.defaultCharset()))
+                .append("&response_type=code")
+                .append("&scope=")
+                .append(URLEncoder.encode(Scope.join(SCOPES), Charset.defaultCharset()))
+                .toString();
+    }
+
+    private String generateRedirectURI()
+    {
+        return String.format("%s/%s", radio.getConfiguration().getString(ConfigOption.OAUTH2_URL),
+                Constants.REDIRECT_URI);
     }
 
     private Session refreshUserSession(Session expiredSession)

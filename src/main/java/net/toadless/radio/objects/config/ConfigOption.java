@@ -10,6 +10,7 @@ public enum ConfigOption
 
     // OAuth2
     OAUTH2_KEY("oauth2.key"),
+    OAUTH2_URL("oauth2.url"),
 
     DBUSERNAME("database.username"),
     DBPASSWORD("database.password"),
