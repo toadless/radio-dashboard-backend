@@ -1,5 +1,6 @@
 package net.toadless.radio.util;
 
+import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Header;
 import io.javalin.http.InternalServerErrorResponse;
 import net.dv8tion.jda.api.utils.data.DataObject;
@@ -46,7 +47,7 @@ public class WebUtils
         {
             if (response.code() != 200)
             {
-                throw new InternalServerErrorResponse("Incorrect 'code' in request url");
+                throw new BadRequestResponse("Incorrect 'code' in request url");
             }
 
             try (ResponseBody body = response.body())

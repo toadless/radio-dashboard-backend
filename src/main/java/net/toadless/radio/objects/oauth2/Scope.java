@@ -31,9 +31,9 @@ public enum Scope
         {
             result.append(scopes[i].getIdentifier());
 
-            if (i != scopes.length)
+            if (i != scopes.length - 1)
             {
-                result.append(", ");
+                result.append(" ");
             }
         }
 

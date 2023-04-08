@@ -60,7 +60,20 @@ public class OAuth2Module extends Module
                 .build(this::fetchGuild);
     }
 
-    private String generateLoginUrl()
+    public User getUser(long userId)
+    {
+        return users.get(userId);
+    }
+
+    public long createSession(String code)
+    {
+        Session session = WebUtils.createSession(radio, generateRedirectURI(), code);
+        DatabaseUtils.registerSession(radio, session);
+
+        return session.getId();
+    }
+
+    public String generateAuthorizeURL()
     {
         return new StringBuilder()
                 .append(Constants.DISCORD_API)
