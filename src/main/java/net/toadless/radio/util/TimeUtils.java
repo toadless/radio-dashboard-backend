@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Date;
 
@@ -27,6 +28,6 @@ public class TimeUtils
 
     public static Date dateFromLocalDateTime(LocalDateTime time)
     {
-        return Date.from(time.toInstant(ZoneOffset.of(ZoneOffset.systemDefault().getId())));
+        return Date.from(time.atZone(ZoneId.systemDefault()).toInstant());
     }
 }

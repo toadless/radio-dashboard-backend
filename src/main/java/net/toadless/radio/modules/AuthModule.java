@@ -6,7 +6,9 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import net.toadless.radio.Radio;
+import net.toadless.radio.objects.auth.UserTokens;
 import net.toadless.radio.objects.config.ConfigOption;
+import net.toadless.radio.objects.database.RefreshToken;
 import net.toadless.radio.objects.module.Module;
 import net.toadless.radio.objects.module.Modules;
 import net.toadless.radio.util.TimeUtils;
@@ -43,6 +45,17 @@ public class AuthModule extends Module
         this.refreshTokenParser = Jwts.parserBuilder().setSigningKey(refreshTokenKey).build();
     }
 
+    public UserTokens generateUserTokens(long userId)
+    {
+        String accessToken = generateAccessToken(userId);
+
+        UUID jti = RefreshToken.generateRefreshToken(radio, userId);
+        String refreshToken = generateRefreshToken(userId, jti);
+
+        LOGGER.debug("Generated tokens for " + userId);
+        return new UserTokens(accessToken, refreshToken);
+    }
+
     private String generateAccessToken(long userId)
     {
         return Jwts.builder()
@@ -70,12 +83,12 @@ public class AuthModule extends Module
                 .compact();
     }
 
-    public Jws<Claims> parseAccessToken(String token)
+    private Jws<Claims> parseAccessToken(String token)
     {
         return accessTokenParser.parseClaimsJws(token);
     }
 
-    public Jws<Claims> parseRefreshToken(String token)
+    private Jws<Claims> parseRefreshToken(String token)
     {
         return refreshTokenParser.parseClaimsJws(token);
     }

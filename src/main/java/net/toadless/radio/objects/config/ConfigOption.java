@@ -8,6 +8,8 @@ public enum ConfigOption
     CLIENT_ID("client_id"),
     CLIENT_SECRET("client_secret"),
 
+    REDIRECT_URL("redirect_url"),
+
     // OAuth2
     OAUTH2_KEY("oauth2.key"),
     OAUTH2_URL("oauth2.url"),

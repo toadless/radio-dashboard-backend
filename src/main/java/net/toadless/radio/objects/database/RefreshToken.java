@@ -17,14 +17,14 @@ import static net.toadless.radio.jooq.tables.RefreshTokens.REFRESH_TOKENS;
 
 public class RefreshToken
 {
-    private final Logger LOGGER = LoggerFactory.getLogger(RefreshToken.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RefreshToken.class);
 
     private RefreshToken()
     {
         //Overrides the default, public, constructor
     }
 
-    public RefreshTokensRecord getRefreshToken(Radio radio, UUID jti)
+    public static RefreshTokensRecord getRefreshToken(Radio radio, UUID jti)
     {
         try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
         {
@@ -49,7 +49,7 @@ public class RefreshToken
         }
     }
 
-    public boolean removeRefreshToken(Radio radio, long userId, UUID jti)
+    public static boolean removeRefreshToken(Radio radio, long userId, UUID jti)
     {
         try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
         {
@@ -68,7 +68,7 @@ public class RefreshToken
         }
     }
 
-    private boolean insertRefreshToken(Radio radio, long userId, UUID jti, LocalDateTime expiry)
+    private static boolean insertRefreshToken(Radio radio, long userId, UUID jti, LocalDateTime expiry)
     {
         try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
         {
@@ -89,7 +89,7 @@ public class RefreshToken
         }
     }
 
-    public UUID generateRefreshToken(Radio radio, long userId)
+    public static UUID generateRefreshToken(Radio radio, long userId)
     {
         UUID jti = UUID.randomUUID();
 
