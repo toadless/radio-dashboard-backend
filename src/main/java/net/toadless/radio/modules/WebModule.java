@@ -10,9 +10,11 @@ import net.toadless.radio.Radio;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.module.Module;
 import net.toadless.radio.objects.module.Modules;
+import net.toadless.radio.util.AuthUtils;
 import net.toadless.radio.web.auth.AuthorizeRoute;
 import net.toadless.radio.web.auth.CallbackRoute;
 import net.toadless.radio.web.auth.TokenRoute;
+import net.toadless.radio.web.guild.GuildConfigRoute;
 import net.toadless.radio.web.user.GuildsRoute;
 import net.toadless.radio.web.user.UserRoute;
 
@@ -43,6 +45,16 @@ public class WebModule extends Module
                         {
                             path("/", () -> get(new UserRoute(radio)));
                             path("/guilds", () -> get(new GuildsRoute(radio)));
+                        });
+                    });
+
+                    path("/guilds/{guild_id}", () ->
+                    {
+                        before("/*", ctx -> radio.getModules().get(AuthModule.class).authenticateUser(ctx));
+                        before("/*", ctx -> AuthUtils.setGuild(ctx, radio));
+                        path("/", () ->
+                        {
+                            path("/config", () -> get(new GuildConfigRoute(radio)));
                         });
                     });
                     path("/health", () -> get(ctx -> ctx.result("Healthy")));
