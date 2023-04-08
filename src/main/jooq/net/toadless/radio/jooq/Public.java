@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.toadless.radio.jooq.tables.DiscordTokens;
 import net.toadless.radio.jooq.tables.Guilds;
+import net.toadless.radio.jooq.tables.RefreshTokens;
 import net.toadless.radio.jooq.tables.Users;
 
 import org.jooq.Catalog;
@@ -40,6 +41,11 @@ public class Public extends SchemaImpl {
     public final Guilds GUILDS = Guilds.GUILDS;
 
     /**
+     * The table <code>public.refresh_tokens</code>.
+     */
+    public final RefreshTokens REFRESH_TOKENS = RefreshTokens.REFRESH_TOKENS;
+
+    /**
      * The table <code>public.users</code>.
      */
     public final Users USERS = Users.USERS;
@@ -62,6 +68,7 @@ public class Public extends SchemaImpl {
         return Arrays.asList(
             DiscordTokens.DISCORD_TOKENS,
             Guilds.GUILDS,
+            RefreshTokens.REFRESH_TOKENS,
             Users.USERS
         );
     }

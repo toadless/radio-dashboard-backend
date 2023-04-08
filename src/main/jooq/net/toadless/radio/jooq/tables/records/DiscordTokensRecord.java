@@ -24,17 +24,17 @@ public class DiscordTokensRecord extends UpdatableRecordImpl<DiscordTokensRecord
     private static final long serialVersionUID = 1L;
 
     /**
-     * Setter for <code>public.discord_tokens.users_id</code>.
+     * Setter for <code>public.discord_tokens.user_id</code>.
      */
-    public DiscordTokensRecord setUsersId(Long value) {
+    public DiscordTokensRecord setUserId(Long value) {
         set(0, value);
         return this;
     }
 
     /**
-     * Getter for <code>public.discord_tokens.users_id</code>.
+     * Getter for <code>public.discord_tokens.user_id</code>.
      */
-    public Long getUsersId() {
+    public Long getUserId() {
         return (Long) get(0);
     }
 
@@ -108,7 +108,7 @@ public class DiscordTokensRecord extends UpdatableRecordImpl<DiscordTokensRecord
 
     @Override
     public Field<Long> field1() {
-        return DiscordTokens.DISCORD_TOKENS.USERS_ID;
+        return DiscordTokens.DISCORD_TOKENS.USER_ID;
     }
 
     @Override
@@ -128,7 +128,7 @@ public class DiscordTokensRecord extends UpdatableRecordImpl<DiscordTokensRecord
 
     @Override
     public Long component1() {
-        return getUsersId();
+        return getUserId();
     }
 
     @Override
@@ -148,7 +148,7 @@ public class DiscordTokensRecord extends UpdatableRecordImpl<DiscordTokensRecord
 
     @Override
     public Long value1() {
-        return getUsersId();
+        return getUserId();
     }
 
     @Override
@@ -168,7 +168,7 @@ public class DiscordTokensRecord extends UpdatableRecordImpl<DiscordTokensRecord
 
     @Override
     public DiscordTokensRecord value1(Long value) {
-        setUsersId(value);
+        setUserId(value);
         return this;
     }
 
@@ -213,10 +213,10 @@ public class DiscordTokensRecord extends UpdatableRecordImpl<DiscordTokensRecord
     /**
      * Create a detached, initialised DiscordTokensRecord
      */
-    public DiscordTokensRecord(Long usersId, String accessToken, String refreshToken, LocalDateTime expiry) {
+    public DiscordTokensRecord(Long userId, String accessToken, String refreshToken, LocalDateTime expiry) {
         super(DiscordTokens.DISCORD_TOKENS);
 
-        setUsersId(usersId);
+        setUserId(userId);
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
         setExpiry(expiry);
@@ -229,7 +229,7 @@ public class DiscordTokensRecord extends UpdatableRecordImpl<DiscordTokensRecord
         super(DiscordTokens.DISCORD_TOKENS);
 
         if (value != null) {
-            setUsersId(value.getUsersId());
+            setUserId(value.getUserId());
             setAccessToken(value.getAccessToken());
             setRefreshToken(value.getRefreshToken());
             setExpiry(value.getExpiry());

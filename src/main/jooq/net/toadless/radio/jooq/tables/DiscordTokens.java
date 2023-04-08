@@ -49,9 +49,9 @@ public class DiscordTokens extends TableImpl<DiscordTokensRecord> {
     }
 
     /**
-     * The column <code>public.discord_tokens.users_id</code>.
+     * The column <code>public.discord_tokens.user_id</code>.
      */
-    public final TableField<DiscordTokensRecord, Long> USERS_ID = createField(DSL.name("users_id"), SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<DiscordTokensRecord, Long> USER_ID = createField(DSL.name("user_id"), SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.discord_tokens.access_token</code>.
@@ -113,7 +113,7 @@ public class DiscordTokens extends TableImpl<DiscordTokensRecord> {
 
     @Override
     public List<ForeignKey<DiscordTokensRecord, ?>> getReferences() {
-        return Arrays.asList(Keys.DISCORD_TOKENS__DISCORD_TOKENS_USERS_ID_FKEY);
+        return Arrays.asList(Keys.DISCORD_TOKENS__DISCORD_TOKENS_USER_ID_FKEY);
     }
 
     private transient Users _users;
@@ -123,7 +123,7 @@ public class DiscordTokens extends TableImpl<DiscordTokensRecord> {
      */
     public Users users() {
         if (_users == null)
-            _users = new Users(this, Keys.DISCORD_TOKENS__DISCORD_TOKENS_USERS_ID_FKEY);
+            _users = new Users(this, Keys.DISCORD_TOKENS__DISCORD_TOKENS_USER_ID_FKEY);
 
         return _users;
     }

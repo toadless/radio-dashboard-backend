@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS discord_tokens
+CREATE TABLE IF NOT EXISTS refresh_tokens
 (
     token_id UUID PRIMARY KEY NOT NULL,
-    users_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
     expiry TIMESTAMP NOT NULL
 );

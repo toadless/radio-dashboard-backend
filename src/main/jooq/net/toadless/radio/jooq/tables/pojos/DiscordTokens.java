@@ -16,35 +16,35 @@ public class DiscordTokens implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private final Long          usersId;
+    private final Long          userId;
     private final String        accessToken;
     private final String        refreshToken;
     private final LocalDateTime expiry;
 
     public DiscordTokens(DiscordTokens value) {
-        this.usersId = value.usersId;
+        this.userId = value.userId;
         this.accessToken = value.accessToken;
         this.refreshToken = value.refreshToken;
         this.expiry = value.expiry;
     }
 
     public DiscordTokens(
-        Long          usersId,
+        Long          userId,
         String        accessToken,
         String        refreshToken,
         LocalDateTime expiry
     ) {
-        this.usersId = usersId;
+        this.userId = userId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expiry = expiry;
     }
 
     /**
-     * Getter for <code>public.discord_tokens.users_id</code>.
+     * Getter for <code>public.discord_tokens.user_id</code>.
      */
-    public Long getUsersId() {
-        return this.usersId;
+    public Long getUserId() {
+        return this.userId;
     }
 
     /**
@@ -72,7 +72,7 @@ public class DiscordTokens implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("DiscordTokens (");
 
-        sb.append(usersId);
+        sb.append(userId);
         sb.append(", ").append(accessToken);
         sb.append(", ").append(refreshToken);
         sb.append(", ").append(expiry);
