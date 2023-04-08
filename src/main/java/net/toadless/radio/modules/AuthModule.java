@@ -75,7 +75,7 @@ public class AuthModule extends Module
             String jti = jwt.getBody().get("jti", String.class);
 
             RefreshTokensRecord refreshToken = RefreshToken.getRefreshToken(radio, UUID.fromString(jti));
-            if (refreshToken.getUserId().equals(Long.parseLong(jwt.getBody().get("id").toString())))
+            if (!refreshToken.getUserId().equals(Long.parseLong(jwt.getBody().get("id").toString())))
             {
                 // Something fishy is going on (should never come up)
                 throw new UnauthorizedResponse("This 'refresh_token' is malformed");

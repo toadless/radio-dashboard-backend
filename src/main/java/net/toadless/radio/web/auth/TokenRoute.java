@@ -3,6 +3,7 @@ package net.toadless.radio.web.auth;
 import io.javalin.http.BadRequestResponse;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
+import net.dv8tion.jda.api.exceptions.ParsingException;
 import net.dv8tion.jda.api.utils.data.DataObject;
 import net.toadless.radio.Radio;
 import net.toadless.radio.modules.AuthModule;
@@ -36,7 +37,7 @@ public class TokenRoute implements Handler
                 case "refresh_token" -> refresh(ctx, body);
                 default -> throw new BadRequestResponse("Invalid 'grant_type'");
             }
-        } catch (Exception e)
+        } catch (ParsingException e)
         {
             throw new BadRequestResponse("Malformed body");
         }
