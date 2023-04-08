@@ -5,6 +5,11 @@ public enum ConfigOption
     PORT("port"),
 
     TOKEN("token"),
+    CLIENT_ID("client_id"),
+    CLIENT_SECRET("client_secret"),
+
+    // OAuth2
+    OAUTH2_KEY("oauth2.key"),
 
     DBUSERNAME("database.username"),
     DBPASSWORD("database.password"),

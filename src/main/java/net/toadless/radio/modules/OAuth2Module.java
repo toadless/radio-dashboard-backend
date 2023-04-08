@@ -3,6 +3,7 @@ package net.toadless.radio.modules;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.toadless.radio.Radio;
+import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.module.Module;
 import net.toadless.radio.objects.module.Modules;
 import net.toadless.radio.objects.oauth2.Guild;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +22,7 @@ public class OAuth2Module extends Module
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2Module.class);
     private static final Scope[] SCOPES = { Scope.IDENTIFY, Scope.GUILDS };
+    private static final String ALGORITHM = "AES";
 
     private final SecretKey secretKey;
     private final LoadingCache<Long, Session> sessions;
@@ -30,6 +33,7 @@ public class OAuth2Module extends Module
     public OAuth2Module(Radio radio, Modules modules)
     {
         super(radio, modules);
+        this.secretKey = new SecretKeySpec(radio.getConfiguration().getString(ConfigOption.OAUTH2_KEY).getBytes(), ALGORITHM);
         this.sessions = Caffeine.newBuilder()
                 .expireAfterAccess(2, TimeUnit.HOURS)
                 .recordStats()
