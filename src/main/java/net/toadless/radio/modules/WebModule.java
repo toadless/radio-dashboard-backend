@@ -13,6 +13,7 @@ import net.toadless.radio.objects.module.Modules;
 import net.toadless.radio.web.auth.AuthorizeRoute;
 import net.toadless.radio.web.auth.CallbackRoute;
 import net.toadless.radio.web.auth.TokenRoute;
+import net.toadless.radio.web.user.GuildsRoute;
 import net.toadless.radio.web.user.UserRoute;
 
 import static io.javalin.apibuilder.ApiBuilder.*;
@@ -41,6 +42,7 @@ public class WebModule extends Module
                         path("/me", () ->
                         {
                             path("/", () -> get(new UserRoute(radio)));
+                            path("/guilds", () -> get(new GuildsRoute(radio)));
                         });
                     });
                     path("/health", () -> get(ctx -> ctx.result("Healthy")));
