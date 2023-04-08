@@ -16,6 +16,9 @@ public enum ConfigOption
     JWT_ACCESS_TOKEN_SECRET("jwt.access_token_secret"),
     JWT_REFRESH_TOKEN_SECRET("jwt.refresh_token_secret"),
 
+    JWT_ISSUER("jwt.issuer"),
+    JWT_AUDIENCE("jwt.audience"),
+
     DBUSERNAME("database.username"),
     DBPASSWORD("database.password"),
     DBURL("database.url"),

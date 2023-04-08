@@ -9,10 +9,13 @@ import net.toadless.radio.Radio;
 import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.module.Module;
 import net.toadless.radio.objects.module.Modules;
+import net.toadless.radio.util.TimeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.crypto.SecretKey;
+import java.sql.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 public class AuthModule extends Module
@@ -45,6 +48,10 @@ public class AuthModule extends Module
         return Jwts.builder()
                 .setSubject(ACCESS_TOKEN_SUBJECT)
                 .claim("id", userId)
+                .setIssuer(radio.getConfiguration().getString(ConfigOption.JWT_ISSUER))
+                .setAudience(radio.getConfiguration().getString(ConfigOption.JWT_AUDIENCE))
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(TimeUtils.dateFromLocalDateTime(TimeUtils.nowPlusDuration(TimeUtils.ACCESS_TOKEN_EXPIRY)))
                 .signWith(accessTokenKey)
                 .compact();
     }
@@ -55,6 +62,10 @@ public class AuthModule extends Module
                 .setSubject(REFRESH_TOKEN_SUBJECT)
                 .claim("id", userId)
                 .claim("jti", jti)
+                .setIssuer(radio.getConfiguration().getString(ConfigOption.JWT_ISSUER))
+                .setAudience(radio.getConfiguration().getString(ConfigOption.JWT_AUDIENCE))
+                .setIssuedAt(Date.from(Instant.now()))
+                .setExpiration(TimeUtils.dateFromLocalDateTime(TimeUtils.nowPlusDuration(TimeUtils.REFRESH_TOKEN_EXPIRY)))
                 .signWith(refreshTokenKey)
                 .compact();
     }
