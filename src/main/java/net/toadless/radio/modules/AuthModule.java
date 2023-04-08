@@ -108,6 +108,12 @@ public class AuthModule extends Module
             }
 
             long userId = Long.parseLong(jwt.getBody().get("id").toString());
+
+            if (radio.getModules().get(OAuth2Module.class).getUser(userId) == null)
+            {
+                throw new BadRequestResponse("The provided 'access_token' refers to a user that does not exist");
+            }
+
             ctx.attribute("user_id", userId);
         } catch (ExpiredJwtException e)
         {

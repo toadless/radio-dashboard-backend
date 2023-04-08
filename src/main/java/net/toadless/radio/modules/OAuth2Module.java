@@ -2,6 +2,7 @@ package net.toadless.radio.modules;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import io.javalin.http.BadRequestResponse;
 import net.dv8tion.jda.api.Permission;
 import net.toadless.radio.Constants;
 import net.toadless.radio.Radio;
@@ -96,6 +97,12 @@ public class OAuth2Module extends Module
                 Constants.REDIRECT_URI);
     }
 
+    public void removeUser(long userId)
+    {
+        DatabaseUtils.removeUser(radio, userId);
+        DatabaseUtils.removeSession(radio, userId);
+    }
+
     private Session refreshUserSession(Session expiredSession)
     {
         Session session = WebUtils.refreshExpiredSession(radio, expiredSession);
@@ -112,7 +119,7 @@ public class OAuth2Module extends Module
             return null;
         }
 
-        if (LocalDateTime.now().isBefore(session.getExpiry()))
+        if (session.getExpiry().isBefore(LocalDateTime.now()))
         {
             return refreshUserSession(session);
         }

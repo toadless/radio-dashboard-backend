@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 
+import static net.toadless.radio.jooq.tables.DiscordTokens.DISCORD_TOKENS;
+import static net.toadless.radio.jooq.tables.Users.USERS;
+
 public class DatabaseUtils
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseUtils.class);
@@ -38,6 +41,21 @@ public class DatabaseUtils
                     .set(record)
                     .onDuplicateKeyUpdate()
                     .set(record);
+            context.execute();
+        }
+        catch (Exception exception)
+        {
+            radio.getLogger().error("An SQL error occurred", exception);
+        }
+    }
+
+    public static void removeSession(Radio radio, long userId)
+    {
+        LOGGER.debug("Removed session " + userId);
+        try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
+        {
+            var context = radio.getModules().get(DatabaseModule.class).getContext(connection)
+                    .deleteFrom(Tables.DISCORD_TOKENS).where(DISCORD_TOKENS.USER_ID.eq(userId));
             context.execute();
         }
         catch (Exception exception)
@@ -87,6 +105,21 @@ public class DatabaseUtils
                     .set(record)
                     .onDuplicateKeyUpdate()
                     .set(record);
+            context.execute();
+        }
+        catch (Exception exception)
+        {
+            radio.getLogger().error("An SQL error occurred", exception);
+        }
+    }
+
+    public static void removeUser(Radio radio, long userId)
+    {
+        LOGGER.debug("Removed user " + userId);
+        try (Connection connection = radio.getModules().get(DatabaseModule.class).getConnection())
+        {
+            var context = radio.getModules().get(DatabaseModule.class).getContext(connection)
+                    .deleteFrom(Tables.USERS).where(USERS.USER_ID.eq(userId));
             context.execute();
         }
         catch (Exception exception)
