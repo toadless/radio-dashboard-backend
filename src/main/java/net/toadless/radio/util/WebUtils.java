@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static net.dv8tion.jda.api.entities.Guild.ICON_URL;
+import static net.dv8tion.jda.api.entities.User.AVATAR_URL;
 
 public class WebUtils
 {
@@ -159,7 +160,10 @@ public class WebUtils
             {
                 DataObject json = DataObject.fromJson(body.string());
                 return new User(json.getLong("id"), json.getString("username"),
-                        json.getString("discriminator"), json.getString("avatar"));
+                        json.getString("discriminator"),
+                        String.format(AVATAR_URL, json.getLong("id"), json.opt("avatar").isPresent() ?
+                                json.getString("avatar") : null, "FILE_EXTENSION")
+                                .replace(".FILE_EXTENSION", ""));
             }
         } catch (IOException e)
         {
