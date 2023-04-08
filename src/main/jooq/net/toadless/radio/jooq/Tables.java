@@ -6,6 +6,7 @@ package net.toadless.radio.jooq;
 
 import net.toadless.radio.jooq.tables.DiscordTokens;
 import net.toadless.radio.jooq.tables.Guilds;
+import net.toadless.radio.jooq.tables.RefreshTokens;
 import net.toadless.radio.jooq.tables.Users;
 
 
@@ -24,6 +25,11 @@ public class Tables {
      * The table <code>public.guilds</code>.
      */
     public static final Guilds GUILDS = Guilds.GUILDS;
+
+    /**
+     * The table <code>public.refresh_tokens</code>.
+     */
+    public static final RefreshTokens REFRESH_TOKENS = RefreshTokens.REFRESH_TOKENS;
 
     /**
      * The table <code>public.users</code>.

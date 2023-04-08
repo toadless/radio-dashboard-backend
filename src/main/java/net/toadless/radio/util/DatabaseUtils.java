@@ -52,7 +52,7 @@ public class DatabaseUtils
         {
             var context = radio.getModules().get(DatabaseModule.class).getContext(connection);
             var existsQuery = context.selectFrom(Tables.DISCORD_TOKENS)
-                    .where(Tables.DISCORD_TOKENS.USERS_ID.eq(userId));
+                    .where(Tables.DISCORD_TOKENS.USER_ID.eq(userId));
 
             if (existsQuery.fetch().isEmpty())
             {
@@ -62,7 +62,7 @@ public class DatabaseUtils
             var result = existsQuery.fetch().get(0);
             existsQuery.close();
 
-            return new Session(result.getUsersId(), EncryptUtils.decrypt(result.getAccessToken(),
+            return new Session(result.getUserId(), EncryptUtils.decrypt(result.getAccessToken(),
                     radio.getModules().get(OAuth2Module.class).getSecretKey(), OAuth2Module.ALGORITHM),
                     EncryptUtils.decrypt(result.getRefreshToken(), radio.getModules().get(OAuth2Module.class)
                             .getSecretKey(), OAuth2Module.ALGORITHM), result.getExpiry());
