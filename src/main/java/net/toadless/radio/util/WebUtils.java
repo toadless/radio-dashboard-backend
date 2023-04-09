@@ -234,7 +234,7 @@ public class WebUtils
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e)
             {
-                LOGGER.error("Something went wrong whilst invalidating guild-cache");
+                LOGGER.error("Something went wrong whilst invalidating guild-cache", e);
             }
 
             @Override
