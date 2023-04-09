@@ -69,7 +69,7 @@ public class AuthUtils
             var guildCache = radio.getShardManager().getGuildCache();
 
             if (guilds.stream().filter(guild -> guildCache.getElementById(guild.getId()) != null)
-                    .filter(guild -> guild.getId() == guildId).collect(Collectors.toSet()).isEmpty())
+                    .filter(guild -> guild.getIdLong() == guildId).collect(Collectors.toSet()).isEmpty())
             {
                 throw new ForbiddenResponse("You do not have permission to access and mutate the provided guild's data");
             }

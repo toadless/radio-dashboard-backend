@@ -204,7 +204,7 @@ public class WebUtils
                 {
                     DataObject guild = json.getObject(i);
                     result.add(new Guild(
-                            guild.getLong("id"),
+                            guild.getString("id"),
                             guild.getString("name"),
                             String.format(
                                     ICON_URL,

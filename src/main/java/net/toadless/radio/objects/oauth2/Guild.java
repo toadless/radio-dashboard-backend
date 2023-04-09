@@ -6,12 +6,12 @@ import java.util.Set;
 
 public class Guild
 {
-    private final long id;
+    private final String id;
     private final String name;
     private final String icon;
     private final Set<Permission> permissions;
 
-    public Guild(long id, String name, String icon, Set<Permission> permissions)
+    public Guild(String id, String name, String icon, Set<Permission> permissions)
     {
         this.id = id;
         this.name = name;
@@ -19,7 +19,7 @@ public class Guild
         this.permissions = permissions;
     }
 
-    public Guild(long id, String name, String icon, long permissions)
+    public Guild(String id, String name, String icon, long permissions)
     {
         this.id = id;
         this.name = name;
@@ -27,9 +27,14 @@ public class Guild
         this.permissions = Permission.getPermissions(permissions);
     }
 
-    public long getId()
+    public String getId()
     {
         return id;
+    }
+
+    public long getIdLong()
+    {
+        return Long.parseLong(getId());
     }
 
     public String getName()
