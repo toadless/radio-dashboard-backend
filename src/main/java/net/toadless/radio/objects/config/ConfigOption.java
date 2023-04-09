@@ -10,6 +10,8 @@ public enum ConfigOption
 
     REDIRECT_URL("redirect_url"),
 
+    RADIO_URL("radio_url"),
+
     // OAuth2
     OAUTH2_KEY("oauth2.key"),
     OAUTH2_URL("oauth2.url"),

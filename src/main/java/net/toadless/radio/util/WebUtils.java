@@ -13,10 +13,8 @@ import net.toadless.radio.objects.config.ConfigOption;
 import net.toadless.radio.objects.oauth2.Guild;
 import net.toadless.radio.objects.oauth2.Session;
 import net.toadless.radio.objects.oauth2.User;
-import okhttp3.FormBody;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -222,5 +220,22 @@ public class WebUtils
             LOGGER.error("Unable to fetch user guilds");
             throw new InternalServerErrorResponse("Something went wrong...");
         }
+    }
+
+    public static void invalidateGuildCache(Radio radio, long guildId)
+    {
+        Request request = new Request.Builder()
+                .url(radio.getConfiguration().getString(ConfigOption.RADIO_URL) + "/guild/uncache?guild_id=" + guildId)
+                .get()
+                .build();
+
+        radio.getOkHttpClient().newCall(request).enqueue(new Callback()
+        {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {}
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) {}
+        });
     }
 }

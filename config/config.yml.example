@@ -27,6 +27,10 @@ client_secret: "client_secret"
 # the url params will contain the users access_token and refresh_token
 redirect_url: "redirect_url"
 
+# The location of Radio's webserver, it is used to invalidate
+# caches after data mutations
+radio_url: "radio_url"
+
 oauth2:
   # A random value used to encrypt access & refresh tokens, make sure its 32 characters long
   key: "random_32_char_value"
