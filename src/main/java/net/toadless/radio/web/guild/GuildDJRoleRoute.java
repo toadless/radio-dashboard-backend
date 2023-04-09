@@ -11,6 +11,7 @@ import net.toadless.radio.Radio;
 import net.toadless.radio.modules.WebModule;
 import net.toadless.radio.objects.database.GuildConfig;
 import net.toadless.radio.util.StringUtils;
+import net.toadless.radio.util.WebUtils;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -56,6 +57,7 @@ public class GuildDJRoleRoute implements Handler
             }
 
             radio.getModules().get(WebModule.class).ok(ctx, DataObject.empty());
+            WebUtils.invalidateGuildCache(radio, guildId);
         } catch (ParsingException e)
         {
             throw new BadRequestResponse("Malformed body");
