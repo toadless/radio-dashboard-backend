@@ -232,10 +232,23 @@ public class WebUtils
         radio.getOkHttpClient().newCall(request).enqueue(new Callback()
         {
             @Override
-            public void onFailure(@NotNull Call call, @NotNull IOException e) {}
+            public void onFailure(@NotNull Call call, @NotNull IOException e)
+            {
+                LOGGER.error("Something went wrong whilst invalidating guild-cache");
+            }
 
             @Override
-            public void onResponse(@NotNull Call call, @NotNull Response response) {}
+            public void onResponse(@NotNull Call call, @NotNull Response response)
+            {
+                if (response.code() != 200)
+                {
+                    LOGGER.error("Something went wrong whilst invalidating guild-cache");
+                }
+
+                // Close Body
+                try (ResponseBody responseBody = response.body())
+                {}
+            }
         });
     }
 }
