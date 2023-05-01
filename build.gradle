@@ -30,7 +30,7 @@ dependencies {
     implementation 'me.carleslc.Simple-YAML:Simple-Yaml:1.8.4'
 
     //Web
-    implementation 'org.jsoup:jsoup:1.15.4'
+    implementation 'org.jsoup:jsoup:1.16.1'
     implementation 'io.javalin:javalin:5.4.2'
 
     // JWT (Json Web Token)
