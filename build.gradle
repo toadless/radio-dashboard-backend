@@ -31,7 +31,7 @@ dependencies {
 
     //Web
     implementation 'org.jsoup:jsoup:1.15.4'
-    implementation 'io.javalin:javalin:5.4.2'
+    implementation 'io.javalin:javalin:5.5.0'
 
     // JWT (Json Web Token)
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
